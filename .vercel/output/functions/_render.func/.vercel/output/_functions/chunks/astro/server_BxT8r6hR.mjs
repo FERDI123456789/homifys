@@ -2029,8 +2029,191 @@ async function renderPage(result, componentFactory, props, children, streaming, 
   }
 }
 
+const EASE_IN_OUT_QUART = "cubic-bezier(0.76, 0, 0.24, 1)";
+function slide({
+  duration
+} = {}) {
+  return {
+    forwards: {
+      old: [
+        {
+          name: "astroFadeOut",
+          duration: duration ?? "90ms",
+          easing: EASE_IN_OUT_QUART,
+          fillMode: "both"
+        },
+        {
+          name: "astroSlideToLeft",
+          duration: duration ?? "220ms",
+          easing: EASE_IN_OUT_QUART,
+          fillMode: "both"
+        }
+      ],
+      new: [
+        {
+          name: "astroFadeIn",
+          duration: duration ?? "210ms",
+          easing: EASE_IN_OUT_QUART,
+          delay: duration ? void 0 : "30ms",
+          fillMode: "both"
+        },
+        {
+          name: "astroSlideFromRight",
+          duration: duration ?? "220ms",
+          easing: EASE_IN_OUT_QUART,
+          fillMode: "both"
+        }
+      ]
+    },
+    backwards: {
+      old: [{ name: "astroFadeOut" }, { name: "astroSlideToRight" }],
+      new: [{ name: "astroFadeIn" }, { name: "astroSlideFromLeft" }]
+    }
+  };
+}
+
+const transitionNameMap = /* @__PURE__ */ new WeakMap();
+function incrementTransitionNumber(result) {
+  let num = 1;
+  if (transitionNameMap.has(result)) {
+    num = transitionNameMap.get(result) + 1;
+  }
+  transitionNameMap.set(result, num);
+  return num;
+}
+function createTransitionScope(result, hash) {
+  const num = incrementTransitionNumber(result);
+  return `astro-${hash}-${num}`;
+}
+const getAnimations = (name) => {
+  return slide();
+};
+const addPairs = (animations, stylesheet) => {
+  for (const [direction, images] of Object.entries(animations)) {
+    for (const [image, rules] of Object.entries(images)) {
+      stylesheet.addAnimationPair(direction, image, rules);
+    }
+  }
+};
 "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_".split("").reduce((v, c) => (v[c.charCodeAt(0)] = c, v), []);
 "-0123456789_".split("").reduce((v, c) => (v[c.charCodeAt(0)] = c, v), []);
+function renderTransition(result, hash, animationName, transitionName) {
+  const scope = createTransitionScope(result, hash);
+  const name = scope;
+  const sheet = new ViewTransitionStyleSheet(scope, name);
+  const animations = getAnimations();
+  if (animations) {
+    addPairs(animations, sheet);
+  }
+  result._metadata.extraHead.push(markHTMLString(`<style>${sheet.toString()}</style>`));
+  return scope;
+}
+class ViewTransitionStyleSheet {
+  constructor(scope, name) {
+    this.scope = scope;
+    this.name = name;
+  }
+  modern = [];
+  fallback = [];
+  toString() {
+    const { scope, name } = this;
+    const [modern, fallback] = [this.modern, this.fallback].map((rules) => rules.join(""));
+    return [
+      `[data-astro-transition-scope="${scope}"] { view-transition-name: ${name}; }`,
+      this.layer(modern),
+      fallback
+    ].join("");
+  }
+  layer(cssText) {
+    return cssText ? `@layer astro { ${cssText} }` : "";
+  }
+  addRule(target, cssText) {
+    this[target].push(cssText);
+  }
+  addAnimationRaw(image, animation) {
+    this.addModern(image, animation);
+    this.addFallback(image, animation);
+  }
+  addModern(image, animation) {
+    const { name } = this;
+    this.addRule("modern", `::view-transition-${image}(${name}) { ${animation} }`);
+  }
+  addFallback(image, animation) {
+    const { scope } = this;
+    this.addRule(
+      "fallback",
+      // Two selectors here, the second in case there is an animation on the root.
+      `[data-astro-transition-fallback="${image}"] [data-astro-transition-scope="${scope}"],
+			[data-astro-transition-fallback="${image}"][data-astro-transition-scope="${scope}"] { ${animation} }`
+    );
+  }
+  addAnimationPair(direction, image, rules) {
+    const { scope, name } = this;
+    const animation = stringifyAnimation(rules);
+    const prefix = direction === "backwards" ? `[data-astro-transition=back]` : direction === "forwards" ? "" : `[data-astro-transition=${direction}]`;
+    this.addRule("modern", `${prefix}::view-transition-${image}(${name}) { ${animation} }`);
+    this.addRule(
+      "fallback",
+      `${prefix}[data-astro-transition-fallback="${image}"] [data-astro-transition-scope="${scope}"],
+			${prefix}[data-astro-transition-fallback="${image}"][data-astro-transition-scope="${scope}"] { ${animation} }`
+    );
+  }
+}
+function addAnimationProperty(builder, prop, value) {
+  let arr = builder[prop];
+  if (Array.isArray(arr)) {
+    arr.push(value.toString());
+  } else {
+    builder[prop] = [value.toString()];
+  }
+}
+function animationBuilder() {
+  return {
+    toString() {
+      let out = "";
+      for (let k in this) {
+        let value = this[k];
+        if (Array.isArray(value)) {
+          out += `
+	${k}: ${value.join(", ")};`;
+        }
+      }
+      return out;
+    }
+  };
+}
+function stringifyAnimation(anim) {
+  if (Array.isArray(anim)) {
+    return stringifyAnimations(anim);
+  } else {
+    return stringifyAnimations([anim]);
+  }
+}
+function stringifyAnimations(anims) {
+  const builder = animationBuilder();
+  for (const anim of anims) {
+    if (anim.duration) {
+      addAnimationProperty(builder, "animation-duration", toTimeValue(anim.duration));
+    }
+    if (anim.easing) {
+      addAnimationProperty(builder, "animation-timing-function", anim.easing);
+    }
+    if (anim.direction) {
+      addAnimationProperty(builder, "animation-direction", anim.direction);
+    }
+    if (anim.delay) {
+      addAnimationProperty(builder, "animation-delay", anim.delay);
+    }
+    if (anim.fillMode) {
+      addAnimationProperty(builder, "animation-fill-mode", anim.fillMode);
+    }
+    addAnimationProperty(builder, "animation-name", anim.name);
+  }
+  return builder.toString();
+}
+function toTimeValue(num) {
+  return typeof num === "number" ? num + "ms" : num;
+}
 
 function spreadAttributes(values = {}, _name, { class: scopedClassName } = {}) {
   let output = "";
@@ -2049,4 +2232,4 @@ function spreadAttributes(values = {}, _name, { class: scopedClassName } = {}) {
   return markHTMLString(output);
 }
 
-export { ASTRO_VERSION as A, REROUTABLE_STATUS_CODES as B, DEFAULT_404_COMPONENT as D, ROUTE_TYPE_HEADER as R, renderComponent as a, createAstro as b, createComponent as c, addAttribute as d, renderHead as e, renderSlot as f, decodeKey as g, REROUTE_DIRECTIVE_HEADER as h, decryptString as i, createSlotValueFromString as j, renderSlotToString as k, renderJSX as l, maybeRenderHead as m, chunkToString as n, isRenderInstruction as o, originPathnameSymbol as p, clientLocalsSymbol as q, renderTemplate as r, spreadAttributes as s, clientAddressSymbol as t, unescapeHTML as u, responseSentSymbol as v, renderPage as w, REWRITE_DIRECTIVE_HEADER_KEY as x, REWRITE_DIRECTIVE_HEADER_VALUE as y, renderEndpoint as z };
+export { ASTRO_VERSION as A, renderEndpoint as B, REROUTABLE_STATUS_CODES as C, DEFAULT_404_COMPONENT as D, ROUTE_TYPE_HEADER as R, renderComponent as a, createAstro as b, createComponent as c, addAttribute as d, renderTransition as e, renderHead as f, renderSlot as g, decodeKey as h, REROUTE_DIRECTIVE_HEADER as i, decryptString as j, createSlotValueFromString as k, renderSlotToString as l, maybeRenderHead as m, renderJSX as n, chunkToString as o, isRenderInstruction as p, originPathnameSymbol as q, renderTemplate as r, spreadAttributes as s, clientLocalsSymbol as t, unescapeHTML as u, clientAddressSymbol as v, responseSentSymbol as w, renderPage as x, REWRITE_DIRECTIVE_HEADER_KEY as y, REWRITE_DIRECTIVE_HEADER_VALUE as z };

@@ -63,12 +63,12 @@ const Ratings = (rating: string) => {
       <div class="mx-auto mt-6 max-w-2xl sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-2 lg:gap-x-8 lg:px-8">
         <div class="sm:grid sm:grid-cols-1 sm:gap-y-8">
           <div class="aspect-h-2 aspect-w-3 overflow-hidden sm:rounded-lg">
-            <Picture quality="max" src={`https://directus-dev.fly.dev/assets/${post.image}?width=500`} alt="test" format="webp" height={500} width={500} class="w-[600px] mx-auto object-cover object-center"/>
+            <Picture transition:animate="slide" quality="max" src={`https://directus-dev.fly.dev/assets/${post.image}?width=500`} alt="test" format="webp" height={500} width={500} class="w-[600px] mx-auto object-cover object-center"/>
           </div>
         </div>
         <div class="hidden lg:grid lg:grid-cols-1 lg:gap-y-8">
             <div class="aspect-h-2 aspect-w-3 overflow-hidden rounded-lg">
-              <Picture quality="max" src={`https://directus-dev.fly.dev/assets/${post.second_image}?width=500`} alt="test" format="webp" height={500} width={500} class="w-[600px] mx-auto object-cover object-center"/>
+              <Picture transition:animate="slide" quality="max" src={`https://directus-dev.fly.dev/assets/${post.second_image}?width=500`} alt="test" format="webp" height={500} width={500} class="w-[600px] mx-auto object-cover object-center"/>
             </div>
           </div>
       </div>
