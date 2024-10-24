@@ -5,16 +5,6 @@ import '../styles/global.css'
 const Houses = () => {
 
 const [active, setActive] = useState("Homes");
-
-  const getBackgroundPosition = () => {
-    switch (active) {
-      case "Homes":
-        return "Homes";
-      default:
-        return "left-2";
-    }
-  };
-
   return (
     <section>
       {/* Container */}

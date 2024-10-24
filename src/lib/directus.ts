@@ -29,6 +29,8 @@ type Author = {
   ratings_authors: any;
   achieve: string;
   achieve_two: string;
+  slug: string;
+  check_value: string;
 }
 
 type Page = {

@@ -70,8 +70,8 @@ const Ratings = (rating: string) => {
       </section>
       <ul class="p-5 mb-10 text-white grid w-full grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-3 grid">
         {
-          posts.map((post) => (
-            <li key={post.slug}> {/* Add key here */}
+          posts.reverse().map((post) => (
+            <li> {/* Add key here */}
               <section class="rounded-3xl hover:scale-105 transition">
                 <div>
                   <a

@@ -1,84 +1,198 @@
 ---
-export const prerender = true;
-
 import { Picture } from "astro:assets";
 import Layout from "../../layouts/Layout.astro";
 import directus from "../../lib/directus";
-import "../../styles/global.css"
-import { readItems, readItem } from "@directus/sdk";
+import "../../styles/global.css";
+import { readItems } from "@directus/sdk";
+import LongCard from "../../components/LongCard.astro";
 
 export async function getStaticPaths() {
   const posts = await directus.request(
+    readItems("posts", {
+      fields: [
+        "slug",
+        "image",
+        "text",
+        "ratings",
+        "price",
+        "location",
+        "published_date",
+        { author: ["slug", "name", "about", "avatar", "ratings_authors", "achieve", "achieve_two", "check_value"] },
+      ],
+      sort: ["-ratings"],
+    })
+  );
+  return posts.map((auth) => ({ params: { slug: auth.author.slug }, props: auth }));
+}
+
+const auth = Astro.props;
+
+const team = await directus.request(
+  readItems("our_team", {
+    fields: [
+      "slug",
+      "name",
+      "small_text",
+      "image",
+      { team_mem: ["*"] },
+    ],
+  })
+);
+
+const posts = await directus.request(
   readItems("posts", {
     fields: [
       "slug",
       "image",
-      "second_image",
       "text",
       "ratings",
       "price",
       "location",
       "published_date",
-      { author: ["name", "avatar", "about", "ratings_authors", "achieve", "achieve_two"] },
+      { author: ["slug", "name", "about", "avatar", "ratings_authors"] },
     ],
-    sort: ["-ratings"],
   })
 );
-  return posts.map((post) => ({ params: { slug: post.slug }, props: post }));
-}
-const post = Astro.props;
 
-  const Ratings_authors = (ratings_author: string) => {
-    switch (ratings_author) {
-      case "Best Rated Seller":
-        return "bg-yellow-600";
-      case "High Rated Seller":
-        return "bg-blue-600";
-      case "Low Rated Seller":
-        return "bg-red-700";
-      default:
-        return "bg-gray-500";
-    }
-  };
+const Ratings_authors = (ratings_author: string) => {
+  switch (ratings_author) {
+    case "Best Rated Seller":
+      return "bg-yellow-700";
+    case "High Rated Seller":
+      return "bg-blue-600";
+    case "Low Rated Seller":
+      return "bg-red-700";
+    case "Not Rated Seller":
+      return "bg-gray-500";
+    default:
+      return "bg-gray-500";
+  }
+};
+
+const check = (check_value: string, slug:string) => {
+  switch (check_value === slug) {
+    case true:
+      return "";
+    case false:
+      return "hidden";
+    default:
+      return "hidden"; // Fallback für andere Fälle
+  }
+};
+
+const Ratings = (rating: string) => {
+  switch (rating) {
+    case "Best Rated":
+      return "bg-yellow-800";
+    case "High Rated":
+      return "bg-blue-600";
+    case "Low Rated":
+      return "bg-red-700";
+    default:
+      return "bg-blue-600";
+  }
+};
 ---
 
-<Layout title={post.text}>
+<Layout title={auth.author.slug}>
 <main>
+
+    <section class="hidden">
+        <div class="mt-32 text-white mx-auto w-full max-w-7xl px-5 py-12 md:px-10 md:py-16 lg:py-20">
+          <div class="flex flex-col gap-8 lg:flex-row lg:gap-10">
+            <div class="flex flex-col gap-8 lg:w-3/5">
+              <h2 class="mb-8 text-3xl font-bold md:text-5xl">{auth.author.name}</h2>
+              <p class="text-sm sm:text-base"> <div set:html={auth.author.about}/> </p>
+              <a href="/team" class="w-36 rounded-md bg-black px-6 py-3 text-center font-semibold text-white hover:bg-yellow-500 hover:scale-110 hover:text-black transition"> See All </a>
+              <div class="my-8 h-px w-full bg-white"></div>
+            </div>
+            <Picture src={`https://directus-dev.fly.dev/assets/${auth.author.avatar}?width=500`} alt="Layla kruz" height={500} width={500} class="mb-40 rounded-xl mr-2 inline-block object-cover w-full"/>
+          </div>
+        </div>
+    </section>  
+
 <section>
-  <!-- Container -->
   <div class="text-white mx-auto w-full max-w-7xl px-5 py-12 md:px-10 md:py-16 lg:py-20">
-    <!-- Component -->
     <div class="grid gap-12 sm:gap-20 lg:grid-cols-2">
-      <!-- Content -->
       <div class="flex flex-col items-start gap-2">
         <div class="flex items-center rounded-md px-3 py-1">
-          <p class={`rounded-xl text-black text-sm p-2 text-xl font-bold ${Ratings_authors(post.author.ratings_authors)}`}>{post.author.ratings_authors}</p>
+          <p class={`p-2 rounded-full text-sm ${Ratings_authors(auth.author.ratings_authors)}`}>{auth.author.ratings_authors}</p>
         </div>
-        <!-- Title -->
-        <h1 class="text-4xl font-bold md:text-6xl"> {post.author.name} </h1>
-        <p class="text-sm text-gray-500 sm:text-xl"><div set:html={post.author.about} /> </p>
-        <!-- Divider -->
+        <h1 class="mb-6 text-4xl font-bold md:text-6xl lg:mb-8"> {auth.author.name} </h1>
+        <p class="text-sm text-gray-500 sm:text-xl"> <div set:html={auth.author.about}/> </p>
         <div class="mb-8 mt-8 h-px w-full bg-black"></div>
         <div class="mb-6 flex flex-col gap-2 text-sm text-gray-500 sm:text-base lg:mb-8">
           <p>
-            <strong>2023: </strong>{post.author.achieve}
+            <strong>2020: </strong>{auth.author.achieve}
           </p>
           <p>
-            <strong>2022: </strong>{post.author.achieve_two}
+            <strong>2020: </strong>{auth.author.achieve_two}
           </p>
         </div>
-        <!-- Buttons -->
         <div class="flex flex-col gap-4 font-semibold sm:flex-row">
-          <a href="#" class="flex items-center gap-4 rounded-md bg-black px-6 py-3 text-white">
+          <a href="/contact" class="flex items-center gap-4 rounded-md bg-black px-6 py-3 text-white">
             <img src="https://assets.website-files.com/6458c625291a94a195e6cf3a/64b147043fe6ab404e65635e_Envelope.svg" alt="" class="inline-block" />
-            <p>Contact Me</p>
+            <p>Get In Contact</p>
           </a>
         </div>
       </div>
-      <!-- Image -->
-      <Picture quality="max" src={`https://directus-dev.fly.dev/assets/${post.author.avatar}?width=500`} alt="test" format="webp" height={500} width={500} class="rounded-xl w-[600px] mx-auto object-cover object-center"/>
+      <Picture src={`https://directus-dev.fly.dev/assets/${auth.author.avatar}?width=500`} alt="Layla kruz" height={500} width={500} class="rounded-xl mr-2 inline-block object-cover h-[500px] w-full"/>
     </div>
   </div>
 </section>
-  </main>
+<div class="mt-20 text-white mx-auto mb-8 max-w-3xl text-center">
+  <h2 class="mb-4 mt-6 text-3xl font-bold md:text-5xl">
+    Homes from {auth.author.name}
+  </h2>
+  <p class="mx-auto mt-4 text-gray-500">
+    All these homes are on the market hot and ready to get baught!
+  </p>
+</div>
+<ul class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 md:gap-10 p-5 text-white">
+  {
+    posts.reverse().map((post) => (
+      <li class={`${check(post.author.name, auth.author.name)} rounded-3xl hover:scale-105 transition`}>
+        <section>
+          <div class="md:mb-40 text-white mx-auto mb-8 max-w-3xl text-center">
+            <div>
+              <a
+                href={`/homes/${post.slug}`}
+                class={`border border-yellow-500 p-5 flex-col gap-4 rounded-3xl px-4 md:px-2 flex`}
+              >
+                <img
+                  alt=""
+                  src={`https://directus-dev.fly.dev/assets/${post.image}?width=500`}
+                  class="inline h-60 w-full rounded-2xl object-cover"
+                />
+                <div class="flex h-full w-full flex-col items-start justify-around px-0 py-4">
+                  <div class="mb-5 flex flex-col items-start gap-2">
+                    <div class="rounded-md bg-black text-blue-600 font-semibold px-2 py-1.5">
+                      <p class="text-gradient-price">{post.price}</p>
+                    </div>
+                    <p class="text-lg font-bold md:text-xl tracking-wide">Name: {post.text}</p>
+                    <p class="text-lg font-bold md:text-xl tracking-wide">Location: {post.location}</p>
+                    <p class="text-lg font-bold md:text-xl tracking-wide">Published: {post.published_date}</p>
+                  </div>
+                  <div class="border-t border-yellow-500 w-full mb-5"></div>
+                  <div class="flex items-center gap-11 sm:flex-row">
+                    <div class="text-[#1d1d1d] p-1 rounded-xl homeinfoBg flex items-center">
+                      <p class="mr-3 hidden md:flex">Owner:</p>
+                      <Picture src={`https://directus-dev.fly.dev/assets/${post.author.avatar}?width=500`} alt="Layla kruz" height={500} width={500} class="mr-2 inline-block rounded-full object-cover h-7 w-7 sm:h-7" />
+                      <p class="text-sm font-bold">{post.author.name}</p>
+                    </div>
+                    <div class="flex items-center">
+                      <p class={`ml-1 xl:ml-32 text-sm font-bold p-2 rounded-full sm:flex ${Ratings(post.ratings)}`}>{post.ratings}</p>
+                    </div>
+                  </div>
+                </div>
+              </a>
+            </div>
+          </div>
+        </section>
+      </li>
+    ))
+  }
+</ul>
+
+</main>
 </Layout>

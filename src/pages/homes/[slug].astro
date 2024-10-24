@@ -1,11 +1,9 @@
 ---
-export const prerender = true;
-
 import { Picture } from "astro:assets";
 import Layout from "../../layouts/Layout.astro";
 import directus from "../../lib/directus";
 import "../../styles/global.css"
-import { readItems, readItem } from "@directus/sdk";
+import { readItems } from "@directus/sdk";
 
 export async function getStaticPaths() {
   const posts = await directus.request(
@@ -20,7 +18,7 @@ export async function getStaticPaths() {
       "location",
       "content",
       "published_date",
-      { author: ["name", "avatar", "ratings_authors"] },
+      { author: ["name", "avatar", "ratings_authors", "slug"] },
     ],
     sort: ["-ratings"],
   })
@@ -116,35 +114,14 @@ const Ratings = (rating: string) => {
               <p class="text-base text-gray-300"><div set:html={post.content} /></p>
             </div>
           </div>
-  
-          <div class="mt-10">
-            <h3 class="text-sm font-medium text-gray-400">Highlights</h3>
-  
-            <div class="mt-4">
-              <ul role="list" class="list-disc space-y-2 pl-4 text-sm">
-                <li class="text-gray-400"><span class="text-gray-600">Hand cut and sewn locally</span></li>
-                <li class="text-gray-400"><span class="text-gray-600">Dyed with our proprietary colors</span></li>
-                <li class="text-gray-400"><span class="text-gray-600">Pre-washed &amp; pre-shrunk</span></li>
-                <li class="text-gray-400"><span class="text-gray-600">Ultra-soft 100% cotton</span></li>
-              </ul>
-            </div>
-          </div>
-  
-          <div class="mt-10">
-            <h2 class="text-sm font-medium text-gray-400">Details</h2>
-  
-            <div class="mt-4 space-y-6">
-              <p class="text-sm text-gray-600">The 6-Pack includes two black, two white, and two heather gray Basic Tees. Sign up for our subscription service and be the first to get new, exciting colors, like our upcoming &quot;Charcoal Gray&quot; limited release.</p>
-            </div>
-          </div>
 
-          <a href={`/authors/${post.slug}`} class="rounded-xl mt-10 flex items-center gap-11 sm:flex-row">
+            <a href={`/authors/${post.author.slug}`} class="rounded-xl mt-10 flex items-center gap-11 sm:flex-row">
             <div class="rounded-xl text-[#1d1d1d] p-1 homeinfoBg flex items-center">
-    <Picture src={`https://directus-dev.fly.dev/assets/${post.author.avatar}?width=500`} alt="Layla kruz" height={500} width={500} class="rounded-full mr-2 inline-block object-cover h-7 w-7 sm:h-7"/>
-      <p class="text-sm font-bold">{post.author.name}</p>
-      <p class={`rounded-xl ml-5 text-sm font-bold p-2 sm:flex ${Ratings_authors(post.author.ratings_authors)}`} >{post.author.ratings_authors}</p>
-    </div>
-    </a>
+              <Picture src={`https://directus-dev.fly.dev/assets/${post.author.avatar}?width=500`} alt="Layla kruz" height={500} width={500} class="rounded-full mr-2 inline-block object-cover h-7 w-7 sm:h-7"/>
+              <p class="text-sm font-bold">{post.author.name}</p>
+              <p class={`rounded-xl ml-5 text-sm font-bold p-2 sm:flex ${Ratings_authors(post.author.ratings_authors)}`} >{post.author.ratings_authors}</p>
+            </div>
+          </a>
         </div>
       </div>
     </div>
