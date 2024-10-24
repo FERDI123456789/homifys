@@ -22,7 +22,7 @@ const navbar = () => {
               Home
             </a>
             <a
-              href="/kontakt"
+              href="/contact"
               className="font-inter rounded-lg lg:px-6 lg:py-4 lg: lg:hover:text-yellow-500"
             >
               Contact

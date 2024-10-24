@@ -36,22 +36,6 @@ const Ratings = (rating: string) => {
 
 <Layout title="Blog">
   <main>
-    <ul hidden>
-        {
-          posts.reverse().map((post) => (
-            <li>
-              <a href={`/homes/${post.slug}`}>
-                <h2>{post.text}</h2>
-              </a>
-              <span>
-                {post.published_date} &bull; {post.author.name}
-              </span>
-            </li>
-          ))
-        }
-       </ul>
-
-
        <section>
         <!-- Container -->
         <div class="">
@@ -87,48 +71,46 @@ const Ratings = (rating: string) => {
       <ul class="p-5 mb-10 text-white grid w-full grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-3 grid">
         {
           posts.map((post) => (
-            <li>
-                <section class="rounded-3xl hover:scale-105 transition">
-                <div>       
-                <a
-                  href={`/homes/${post.slug}`}
-                  class={`border border-yellow-500 p-5 flex-col gap-4 rounded-3xl px-4 md:px-2  flex`}
-    
-                >
-                  <img
-                    alt=""
-                    src={`https://directus-dev.fly.dev/assets/${post.image}?width=500`}
-                    class="inline h-60 w-full rounded-2xl object-cover"
-                  />
-                  <div class="flex h-full w-full max-w-3xl max-h-3xl flex-col items-start justify-around px-0 py-4">
-                    <div class="mb-5 flex flex-col items-start gap-2">
-                      <div class="rounded-md bg-black text-blue-600 font-semibold px-2 py-1.5">
-                        <p class="text-gradient-price">{post.price}</p>
+            <li key={post.slug}> {/* Add key here */}
+              <section class="rounded-3xl hover:scale-105 transition">
+                <div>
+                  <a
+                    href={`/homes/${post.slug}`}
+                    class={`border border-yellow-500 p-5 flex-col gap-4 rounded-3xl px-4 md:px-2 flex`}
+                  >
+                    <img
+                      alt=""
+                      src={`https://directus-dev.fly.dev/assets/${post.image}?width=500`}
+                      class="inline h-60 w-full rounded-2xl object-cover"
+                    />
+                    <div class="flex h-full w-full max-w-3xl max-h-3xl flex-col items-start justify-around px-0 py-4">
+                      <div class="mb-5 flex flex-col items-start gap-2">
+                        <div class="rounded-md bg-black text-blue-600 font-semibold px-2 py-1.5">
+                          <p class="text-gradient-price">{post.price}</p>
+                        </div>
+                        <p class="text-lg font-bold md:text-xl tracking-wide">Name: {post.text}</p>
+                        <p class="text-lg font-bold md:text-xl tracking-wide">Location: {post.location}</p>
+                        <p class="text-lg font-bold md:text-xl tracking-wide">Published: {post.published_date}</p>
                       </div>
-                      <p class="text-lg font-bold md:text-xl tracking-wide">Name: {post.text}</p>
-                      <p class="text-lg font-bold md:text-xl tracking-wide">Location: {post.location}</p>
-					  <p class="text-lg font-bold md:text-xl tracking-wide">Published: {post.published_date}</p>
+                      <div class="border-t border-yellow-500 w-full mb-5"></div>
+                      <div class="flex items-center gap-11 sm:flex-row">
+                        <div class="text-white p-1 rounded-xl flex items-center">
+                          <p class="mr-3">Owner:</p>
+                          <Picture src={`https://directus-dev.fly.dev/assets/${post.author.avatar}?width=500`} alt="Layla kruz" height={500} width={500} class="mr-2 inline-block rounded-full object-cover h-7 w-7 sm:h-7"/>
+                          <p class="text-sm font-bold">{post.author.name}</p>
+                        </div>
+                        <div class="flex items-center">
+                          <p class={`ml-1 xl:ml-32 text-sm font-bold p-2 rounded-full sm:flex ${Ratings(post.ratings)}`}>{post.ratings}</p>
+                        </div>
+                      </div>
                     </div>
-                    <div class="border-t border-yellow-500 w-full mb-5"></div>
-                    <div class="flex items-center gap-11 sm:flex-row">
-                    <div class="text-white p-1 rounded-xl flex items-center">
-                        <p class="mr-3">Owner:</p>
-						<Picture src={`https://directus-dev.fly.dev/assets/${post.author.avatar}?width=500`} alt="Layla kruz" height={500} width={500} class="mr-2 inline-block rounded-full object-cover h-7 w-7 sm:h-7"/>
-              <p class="text-sm font-bold">{post.author.name}</p>
-            </div>
-            <div class="flex items-center">
-              <p class={`ml-1 xl:ml-32 text-sm font-bold p-2 rounded-full sm:flex ${Ratings(post.ratings)}`} >{post.ratings}</p>
-            </div>
-            </div>
-            
-                  </div>
-                </a>
-              </div>
-            </div>
-            
-            </section>
-         ))
+                  </a>
+                </div>
+              </section>
+            </li>
+          ))
         }
-       </ul>
+      </ul>
+      
   </main>
 </Layout>

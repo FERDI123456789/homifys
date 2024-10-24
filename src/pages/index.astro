@@ -99,61 +99,57 @@ const Ratings = (rating: string) => {
 		  </div>
 		</div>
 	  </header>
-	  <div class="mt-20 text-white mx-auto mb-8 max-w-3xl text-center">
-		<h2 class="mb-4 mt-6 text-3xl font-bold md:text-5xl">
-		  Our Homes
-		</h2>
-		<p class="mx-auto mt-4 text-gray-500">
-		  These are just some of our high quality Homes!
-		</p>
-
-		{/* Select */}
+		<!-- Select -->
 		<LongCard title='See All...' href='/homes'/>
 	  </div>
-	  <ul class="p-5 mb-10 text-white grid w-full grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-3 grid">
-        {
-          posts.reverse().slice(0,3).map((post) => (
-            <li>
-                <section class="rounded-3xl hover:scale-105 transition">
-                <div>       
-                <a
-                  href={`/homes/${post.slug}`}
-                  class={`border border-yellow-500 p-5 flex-col gap-4 rounded-3xl px-4 md:px-2  flex`}
-    
-                >
-                  <img
-                    alt=""
-                    src={`https://directus-dev.fly.dev/assets/${post.image}?width=500`}
-                    class="inline h-60 w-full rounded-2xl object-cover"
-                  />
-                  <div class="flex h-full w-full max-w-3xl max-h-3xl flex-col items-start justify-around px-0 py-4">
-                    <div class="mb-5 flex flex-col items-start gap-2">
-                      <div class="rounded-md bg-black text-blue-600 font-semibold px-2 py-1.5">
-                        <p class="text-gradient-price">{post.price}</p>
-                      </div>
-                      <p class="text-lg font-bold md:text-xl tracking-wide">Name: {post.text}</p>
-                      <p class="text-lg font-bold md:text-xl tracking-wide">Location: {post.location}</p>
-					  <p class="text-lg font-bold md:text-xl tracking-wide">Published: {post.published_date}</p>
-                    </div>
-                    <div class="border-t border-yellow-500 w-full mb-5"></div>
-                    <div class="flex items-center gap-11 sm:flex-row">
-                    <div class="text-[#1d1d1d] p-1 rounded-xl homeinfoBg flex items-center">
-                        <p class="mr-3">Owner:</p>
-						<Picture src={`https://directus-dev.fly.dev/assets/${post.author.avatar}?width=500`} alt="Layla kruz" height={500} width={500} class="mr-2 inline-block rounded-full object-cover h-7 w-7 sm:h-7"/>
-              <p class="text-sm font-bold">{post.author.name}</p>
-            </div>
-            <div class="flex items-center">
-              <p class={`ml-1 xl:ml-32 text-sm font-bold p-2 rounded-full sm:flex ${Ratings(post.ratings)}`} >{post.ratings}</p>
-            </div>
-            </div>
-                  </div>
-                </a>
-              </div>
-            </div>
-            </section>
-          ))
-        }
-       </ul>
+	  <ul class="p-5 mb-10 text-white grid w-full grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-3">
+		{
+		  posts.reverse().slice(0, 3).map((post) => (
+			<li key={post.slug}>
+			  <section class="rounded-3xl hover:scale-105 transition">
+				<div class="mt-20 text-white mx-auto mb-8 max-w-3xl text-center">
+				  <h2 class="mb-4 mt-6 text-3xl font-bold md:text-5xl">Our Homes</h2>
+				  <p class="mx-auto mt-4 text-gray-500">These are just some of our high-quality Homes!</p>
+				  <div>
+					<a
+					  href={`/homes/${post.slug}`}
+					  class={`border border-yellow-500 p-5 flex-col gap-4 rounded-3xl px-4 md:px-2 flex`}
+					>
+					  <img
+						alt=""
+						src={`https://directus-dev.fly.dev/assets/${post.image}?width=500`}
+						class="inline h-60 w-full rounded-2xl object-cover"
+					  />
+					  <div class="flex h-full w-full max-w-3xl max-h-3xl flex-col items-start justify-around px-0 py-4">
+						<div class="mb-5 flex flex-col items-start gap-2">
+						  <div class="rounded-md bg-black text-blue-600 font-semibold px-2 py-1.5">
+							<p class="text-gradient-price">{post.price}</p>
+						  </div>
+						  <p class="text-lg font-bold md:text-xl tracking-wide">Name: {post.text}</p>
+						  <p class="text-lg font-bold md:text-xl tracking-wide">Location: {post.location}</p>
+						  <p class="text-lg font-bold md:text-xl tracking-wide">Published: {post.published_date}</p>
+						</div>
+						<div class="border-t border-yellow-500 w-full mb-5"></div>
+						<div class="flex items-center gap-11 sm:flex-row">
+						  <div class="text-[#1d1d1d] p-1 rounded-xl homeinfoBg flex items-center">
+							<p class="mr-3">Owner:</p>
+							<Picture src={`https://directus-dev.fly.dev/assets/${post.author.avatar}?width=500`} alt="Layla kruz" height={500} width={500} class="mr-2 inline-block rounded-full object-cover h-7 w-7 sm:h-7" />
+							<p class="text-sm font-bold">{post.author.name}</p>
+						  </div>
+						  <div class="flex items-center">
+							<p class={`ml-1 xl:ml-32 text-sm font-bold p-2 rounded-full sm:flex ${Ratings(post.ratings)}`}>{post.ratings}</p>
+						  </div>
+						</div>
+					  </div>
+					</a>
+				  </div>
+				</div>
+			  </section>
+			</li>
+		  ))
+		}
+	  </ul>
+	  
 
 	  <section class="featBg">
 		<!-- Container -->
@@ -195,27 +191,26 @@ const Ratings = (rating: string) => {
         {
             team.reverse().slice(0,3).map((t) => (
             <li>
-
-<section>
-  <!-- Container -->
-  <div class="mb-3 mx-auto w-full max-w-7xl">
-    <!-- Content -->
-    <div class="grid grid-cols-1 justify-items-center gap-5 sm:grid-cols-2 sm:justify-items-stretch md:grid-cols-1">
-      <!-- Item -->
-      <a href={`/team/${t.slug}`} class="mx-auto flex w-full flex-col items-center gap-4 py-8 text-center md:px-8 md:py-4 lg:px-12">
-        <Picture src={`https://directus-dev.fly.dev/assets/${t.image}?width=500`} alt="Layla kruz" height={1000} width={1000} class="mr-2 inline-block rounded-full object-cover h-40 w-40 sm:h-40"/>
-        <p class="font-bold">{t.name}</p>
-        <p class="text-center text-sm text-gray-200"> {t.small_text} </p>
-      </a>
-    </div>
-  </div>
-</section>
+				<section>
+				<!-- Container -->
+				<div class="mb-3 mx-auto w-full max-w-7xl">
+					<!-- Content -->
+					<div class="grid grid-cols-1 justify-items-center gap-5 sm:grid-cols-2 sm:justify-items-stretch md:grid-cols-1">
+					<!-- Item -->
+					<a href={`/team/${t.slug}`} class="mx-auto flex w-full flex-col items-center gap-4 py-8 text-center md:px-8 md:py-4 lg:px-12">
+						<Picture src={`https://directus-dev.fly.dev/assets/${t.image}?width=500`} alt="Layla kruz" height={1000} width={1000} class="mr-2 inline-block rounded-full object-cover h-40 w-40 sm:h-40"/>
+						<p class="font-bold">{t.name}</p>
+						<p class="text-center text-sm text-gray-200"> {t.small_text} </p>
+					</a>
+					</div>
+				</div>
+				</section>
           </li>
          ))
         }
        </ul>
 	   <div class="text-black mx-auto max-w-3xl text-center">
-		{/* Select */}
+		<!-- select -->
 		<LongCard title='See All...' href='/team'/>
 	  </div>
 	</section>
