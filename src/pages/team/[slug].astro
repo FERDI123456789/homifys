@@ -38,7 +38,7 @@ const t = Astro.props;
               <div class="my-8 h-px w-full bg-white"></div>
             </div>
             <!-- Image -->
-            <Picture src={`https://directus-dev.fly.dev/assets/${t.team_mem.image}?width=500`} alt="Layla kruz" height={500} width={500} class="mb-40 rounded-xl mr-2 inline-block object-cover w-full md:h-[400px]"/>
+            <Picture transition:animate="slide" src={`https://directus-dev.fly.dev/assets/${t.team_mem.image}?width=500`} alt="Layla kruz" height={500} width={500} class="mb-40 rounded-xl mr-2 inline-block object-cover w-full md:h-[400px]"/>
           </div>
         </div>
       </section>  
