@@ -1,16 +1,283 @@
 ---
+import Layout from '../layouts/Layout.astro';
+import houses from "../assets/houses3.jpg"
+import woman from "../assets/woman.png"
+import { Picture } from 'astro:assets';
+import Card from '../components/Card.astro';
+import Feature from "../assets/features2.jpg"
+import directus from "../lib/directus";
+import { readItems } from "@directus/sdk";
+import LongCard from '../components/LongCard.astro';
 
+const posts = await directus.request(
+  readItems("posts", {
+    fields: [
+      "slug",
+      "image",
+      "text",
+      "ratings",
+      "price",
+      "location",
+      "published_date",
+      { author: ["name", "avatar"] },
+    ],
+    sort: ["-ratings"],
+  })
+);
+
+const team = await directus.request(
+  readItems("our_team", {
+    fields: [
+      "slug",
+      "name",
+      "small_text",
+      "image",
+      { team_mem: ["*"] },
+    ],
+  })
+);
+
+const Ratings = (rating: string) => {
+    switch (rating) {
+      case "Best Rated":
+        return "bg-yellow-800";
+      case "High Rated":
+        return "bg-blue-600";
+      case "Low Rated":
+        return "bg-red-700";
+      default:
+        return "bg-blue-600";
+    }
+  };
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout title="Welcome to Astro.">
+
+	<header>
+		<!-- Container -->
+		<div class="rounded-3xl text-white mx-auto w-full max-w-7xl px-5 py-5 md:px-5 md:py-5">
+		  <!-- Component -->
+		  <div class="grid items-center gap-8 sm:gap-20 lg:grid-cols-2">
+			<div>
+			  <!-- Title -->
+			  <h2 class="mb-4 leading-10 text-4xl font-bold md:text-6xl"> Find your Perfect <span class="text-gradient">Home</span> With homifys </h2>
+			  <p class="mb-6 max-w-lg text-sm text-gray-500 sm:text-xl lg:mb-8">Here at homifyss we have a ton of homes for you so we Hope that you can also find your perfect home here! </p>
+			  <!-- Testimonial -->
+			  <div class="flex items-center gap-11 sm:flex-row">
+				<div class="flex items-center">
+					<Picture src={woman} alt="Layla kruz" class="mr-2 inline-block rounded-full object-cover h-7 w-7 sm:h-7"/>
+					<p class="text-sm font-bold">Layla kruz</p>
+				</div>
+				<div class="flex items-center">
+				  <p class="mr-2 text-sm font-bold">5.0</p>
+				  <img src="https://assets.website-files.com/6357722e2a5f19121d37f84d/6357722e2a5f195bcf37f880_Vector.svg" alt="" class="mr-1.5 inline-block w-4" />
+				  <img src="https://assets.website-files.com/6357722e2a5f19121d37f84d/6357722e2a5f195bcf37f880_Vector.svg" alt="" class="mr-1.5 inline-block w-4" />
+				  <img src="https://assets.website-files.com/6357722e2a5f19121d37f84d/6357722e2a5f195bcf37f880_Vector.svg" alt="" class="mr-1.5 inline-block w-4" />
+				  <img src="https://assets.website-files.com/6357722e2a5f19121d37f84d/6357722e2a5f195bcf37f880_Vector.svg" alt="" class="mr-1.5 inline-block w-4" />
+				  <img src="https://assets.website-files.com/6357722e2a5f19121d37f84d/6357722e2a5f195bcf37f880_Vector.svg" alt="" class="mr-1.5 inline-block w-4" />
+				</div>
+			  </div>
+			  <!-- Button -->
+			  <div class="mt-10 mb-6 grid grid-cols-1 sm:grid-cols-4 gap-1 flex items-stretch md:mb-10 lg:mb-12">
+				<Card title='Homes' href='homes'/>
+			  </div>
+			  <div class="flex items-center">
+				<p style="font-size: 12px;" class="sm:text-base">Follow Us</p> {/* Divider */} <div class="ml-4 mr-4 w-10 border-t border-black"></div>
+				<a href="#">
+					<svg class="mr-4 inline-block" xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24"><circle cx="17" cy="7" r="1.5" fill="#e14141" fill-opacity="0"><animate fill="freeze" attributeName="fill-opacity" begin="1.3s" dur="0.15s" values="0;1"/></circle><g fill="none" stroke="#e14141" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path stroke-dasharray="72" stroke-dashoffset="72" d="M16 3c2.76 0 5 2.24 5 5v8c0 2.76 -2.24 5 -5 5h-8c-2.76 0 -5 -2.24 -5 -5v-8c0 -2.76 2.24 -5 5 -5h4Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.6s" values="72;0"/></path><path stroke-dasharray="28" stroke-dashoffset="28" d="M12 8c2.21 0 4 1.79 4 4c0 2.21 -1.79 4 -4 4c-2.21 0 -4 -1.79 -4 -4c0 -2.21 1.79 -4 4 -4"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.7s" dur="0.6s" values="28;0"/></path></g></svg>
+				</a>
+				<a href="#">
+					<svg class="mr-4 inline-block" xmlns="http://www.w3.org/2000/svg" width="2.5em" height="2.5em" viewBox="0 0 24 24"><mask id="lineMdYoutubeFilled0"><g fill="none" fill-opacity="0" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path fill="#fff" stroke-dasharray="64" stroke-dashoffset="64" d="M12 5c9 0 9 0 9 7c0 7 0 7 -9 7c-9 0 -9 0 -9 -7c0 -7 0 -7 9 -7Z"><animate fill="freeze" attributeName="fill-opacity" begin="0.6s" dur="0.5s" values="0;1"/><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.6s" values="64;0"/></path><path fill="#000" stroke="none" d="M12 11L12 12L12 13z"><animate fill="freeze" attributeName="d" begin="1.1s" dur="0.2s" values="M12 11L12 12L12 13z;M10 8.5L16 12L10 15.5z"/><set fill="freeze" attributeName="fill-opacity" begin="1.1s" to="1"/></path></g></mask><rect width="24" height="24" fill="#e14141" mask="url(#lineMdYoutubeFilled0)"/></svg>
+				</a>
+				<a href="#" class="inline-block max-w-full text-black">
+					<svg class="mr-4 inline-block" xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24"><g fill="#e14141"><path d="M1 2h2.5L3.5 2h-2.5zM5.5 2h2.5L7.2 2h-2.5z"><animate fill="freeze" attributeName="d" dur="0.4s" values="M1 2h2.5L3.5 2h-2.5zM5.5 2h2.5L7.2 2h-2.5z;M1 2h2.5L18.5 22h-2.5zM5.5 2h2.5L23 22h-2.5z"/></path><path d="M3 2h5v0h-5zM16 22h5v0h-5z"><animate fill="freeze" attributeName="d" begin="0.4s" dur="0.4s" values="M3 2h5v0h-5zM16 22h5v0h-5z;M3 2h5v2h-5zM16 22h5v-2h-5z"/></path><path d="M18.5 2h3.5L22 2h-3.5z"><animate fill="freeze" attributeName="d" begin="0.5s" dur="0.4s" values="M18.5 2h3.5L22 2h-3.5z;M18.5 2h3.5L5 22h-3.5z"/></path></g></svg>
+				</a>
+			  </div>
+			</div>
+			<!-- Hero Image -->
+			<Picture src={houses} alt="Beutifull hauses" format='webp' class="inline-block rounded-xl h-full w-full max-w-2xl"/>
+		  </div>
+		</div>
+	  </header>
+	  <div class="mt-20 text-white mx-auto mb-8 max-w-3xl text-center">
+		<h2 class="mb-4 mt-6 text-3xl font-bold md:text-5xl">
+		  Our Homes
+		</h2>
+		<p class="mx-auto mt-4 text-gray-500">
+		  These are just some of our high quality Homes!
+		</p>
+
+		{/* Select */}
+		<LongCard title='See All...' href='/homes'/>
+	  </div>
+	  <ul class="p-5 mb-10 text-white grid w-full grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-3 grid">
+        {
+          posts.reverse().slice(0,3).map((post) => (
+            <li>
+                <section class="rounded-3xl hover:scale-105 transition">
+                <div>       
+                <a
+                  href={`/homes/${post.slug}`}
+                  class={`border border-yellow-500 p-5 flex-col gap-4 rounded-3xl px-4 md:px-2  flex`}
+    
+                >
+                  <img
+                    alt=""
+                    src={`https://directus-dev.fly.dev/assets/${post.image}?width=500`}
+                    class="inline h-60 w-full rounded-2xl object-cover"
+                  />
+                  <div class="flex h-full w-full max-w-3xl max-h-3xl flex-col items-start justify-around px-0 py-4">
+                    <div class="mb-5 flex flex-col items-start gap-2">
+                      <div class="rounded-md bg-black text-blue-600 font-semibold px-2 py-1.5">
+                        <p class="text-gradient-price">{post.price}</p>
+                      </div>
+                      <p class="text-lg font-bold md:text-xl tracking-wide">Name: {post.text}</p>
+                      <p class="text-lg font-bold md:text-xl tracking-wide">Location: {post.location}</p>
+					  <p class="text-lg font-bold md:text-xl tracking-wide">Published: {post.published_date}</p>
+                    </div>
+                    <div class="border-t border-yellow-500 w-full mb-5"></div>
+                    <div class="flex items-center gap-11 sm:flex-row">
+                    <div class="text-[#1d1d1d] p-1 rounded-xl homeinfoBg flex items-center">
+                        <p class="mr-3">Owner:</p>
+						<Picture src={`https://directus-dev.fly.dev/assets/${post.author.avatar}?width=500`} alt="Layla kruz" height={500} width={500} class="mr-2 inline-block rounded-full object-cover h-7 w-7 sm:h-7"/>
+              <p class="text-sm font-bold">{post.author.name}</p>
+            </div>
+            <div class="flex items-center">
+              <p class={`ml-1 xl:ml-32 text-sm font-bold p-2 rounded-full sm:flex ${Ratings(post.ratings)}`} >{post.ratings}</p>
+            </div>
+            </div>
+                  </div>
+                </a>
+              </div>
+            </div>
+            </section>
+          ))
+        }
+       </ul>
+
+	  <section class="featBg">
+		<!-- Container -->
+		<div class="mx-auto w-full max-w-7xl px-5 py-16 md:px-10 md:py-20">
+		  <!-- Title -->
+		  <h2 class="mx-auto mb-8 max-w-3xl text-center text-3xl text-white font-bold md:mb-12 md:text-5xl lg:mb-16"> Smooth Process. Transformative Benefits. </h2>
+		  <!-- Content -->
+		  <div class="flex flex-col items-center justify-center bg-contain bg-center pt-10 bg-[url('https://assets.website-files.com/6458c625291a94a195e6cf3a/648825fca218588cb636c341_Group%2048114.png')]">
+			<div class="flex flex-col justify-around gap-4 sm:flex-row">
+			  <div class="rounded-md border border-solid border-gray-300 bg-gray-100 p-6 text-black">
+				<h5 class="mb-2 text-xl font-bold"> Buying Homes at homifys? </h5>
+				<p class="text-sm"> Our Team at homifys trys to make the best buying experience ever</p>
+			  </div>
+			  <div class="rounded-md border border-solid border-gray-300 bg-white p-6 text-black" >
+				<h5 class="mb-2 text-xl font-bold">Selling Homes at homifys?</h5>
+				<p class="text-sm"> Wanna sell a home or baught a home and wann sell it again, No problem just contact us and we will gonna make it happen! </p>
+			  </div>
+			  <div class="rounded-md border border-solid border-gray-300 bg-white p-6 text-black">
+				<h5 class="mb-2 text-xl font-bold">And After homifys?</h5>
+				<p class="text-sm"> After you sold or baught at homifys we gonna do the rest and settle the deal!</p>
+			  </div>
+			</div>
+			<div class="max-w-5xl">
+			  <Picture src={Feature} alt="" class="mt-16 inline-block rounded-3xl transition" />
+			</div>
+		  </div>
+		</div>
+	  </section>
+	  <section class="factsBg">
+	  <div class="text-white mx-auto mb-8 max-w-3xl text-center">
+		<h2 class="text-3xl font-bold md:text-5xl">
+		  Our Team
+		</h2>
+		<p class="mx-auto mt-4 text-gray-200">
+			They Make it Possible
+		</p>
+	  </div>
+      <ul class="p-5 mb-10 text-white grid w-full grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-3 grid">
+        {
+            team.reverse().slice(0,3).map((t) => (
+            <li>
+
+<section>
+  <!-- Container -->
+  <div class="mb-3 mx-auto w-full max-w-7xl">
+    <!-- Content -->
+    <div class="grid grid-cols-1 justify-items-center gap-5 sm:grid-cols-2 sm:justify-items-stretch md:grid-cols-1">
+      <!-- Item -->
+      <a href={`/team/${t.slug}`} class="mx-auto flex w-full flex-col items-center gap-4 py-8 text-center md:px-8 md:py-4 lg:px-12">
+        <Picture src={`https://directus-dev.fly.dev/assets/${t.image}?width=500`} alt="Layla kruz" height={1000} width={1000} class="mr-2 inline-block rounded-full object-cover h-40 w-40 sm:h-40"/>
+        <p class="font-bold">{t.name}</p>
+        <p class="text-center text-sm text-gray-200"> {t.small_text} </p>
+      </a>
+    </div>
+  </div>
+</section>
+          </li>
+         ))
+        }
+       </ul>
+	   <div class="text-black mx-auto max-w-3xl text-center">
+		{/* Select */}
+		<LongCard title='See All...' href='/team'/>
+	  </div>
+	</section>
+  
+
+</Layout>
+
+<style>
+	main {
+		margin: auto;
+		padding: 1rem;
+		width: 800px;
+		max-width: calc(100% - 2rem);
+		color: white;
+		font-size: 20px;
+		line-height: 1.6;
+	}
+	.astro-a {
+		position: absolute;
+		top: -32px;
+		left: 50%;
+		transform: translatex(-50%);
+		width: 220px;
+		height: auto;
+		z-index: -1;
+	}
+	h1 {
+		font-size: 4rem;
+		font-weight: 700;
+		line-height: 1;
+		text-align: center;
+		margin-bottom: 1em;
+	}
+	.text-gradient {
+		background-image: var(--accent-gradient);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		background-size: 400%;
+		background-position: 0%;
+	}
+	.instructions {
+		margin-bottom: 2rem;
+		border: 1px solid rgba(var(--accent-light), 25%);
+		background: linear-gradient(rgba(var(--accent-dark), 66%), rgba(var(--accent-dark), 33%));
+		padding: 1.5rem;
+		border-radius: 8px;
+	}
+	.instructions code {
+		font-size: 0.8em;
+		font-weight: bold;
+		background: rgba(var(--accent-light), 12%);
+		color: rgb(var(--accent-light));
+		border-radius: 4px;
+		padding: 0.3em 0.4em;
+	}
+	.instructions strong {
+		color: rgb(var(--accent-light));
+	}
+	.link-card-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(24ch, 1fr));
+		gap: 2rem;
+		padding: 0;
+	}
+</style>

@@ -1,0 +1,134 @@
+---
+import { Picture } from "astro:assets";
+import Layout from "../../layouts/Layout.astro";
+import directus from "../../lib/directus";
+import { readItems } from "@directus/sdk";
+
+const posts = await directus.request(
+  readItems("posts", {
+    fields: [
+      "slug",
+      "image",
+      "text",
+      "ratings",
+      "price",
+      "location",
+      "published_date",
+      { author: ["name","avatar"] },
+    ],
+    sort: ["-ratings"],
+  })
+);
+
+const Ratings = (rating: string) => {
+    switch (rating) {
+      case "Best Rated":
+        return "bg-yellow-800";
+      case "High Rated":
+        return "bg-blue-600";
+      case "Low Rated":
+        return "bg-red-700";
+      default:
+        return "bg-blue-600";
+    }
+  };
+---
+
+<Layout title="Blog">
+  <main>
+    <ul hidden>
+        {
+          posts.reverse().map((post) => (
+            <li>
+              <a href={`/homes/${post.slug}`}>
+                <h2>{post.text}</h2>
+              </a>
+              <span>
+                {post.published_date} &bull; {post.author.name}
+              </span>
+            </li>
+          ))
+        }
+       </ul>
+
+
+       <section>
+        <!-- Container -->
+        <div class="">
+          <div class="-mt-[40px] text-white p-5 mx-auto w-full max-w-full text-center">
+            <!-- Title -->
+            <div class="z-20 hidden sm:mt-10 sm:mb-10 sm:flex sm:justify-center">
+              <div class="border border-white relative rounded-full px-3 py-1 text-sm leading-6 text-white ring-1 ring-gray-900/10 hover:ring-gray-900/20">
+                Want to put your home on here? Just contact us<a href="/contact" class="ml-1 font-semibold text-gradient hover:scale-125"><span class="absolute inset-0" aria-hidden="true"></span> Here <span aria-hidden="true">&rarr;</span></a>
+              </div>
+            </div>
+            <div class="hidden sm:mt-8 sm:mb-8 sm:flex sm:justify-center">
+              <div class="mt-10 relative rounded-full px-3 py-1 text-5xl leading-6 text-white ring-1 ring-gray-900/10 hover:ring-gray-900/20">
+                Our Homes
+              </div>
+            </div>
+            <ul class="mx-auto mb-8 flex flex-col items-center justify-center gap-5 sm:flex-row sm:gap-8 md:gap-10 lg:mb-12">
+              <li class="bg-black flex items-center border border-white p-2 rounded-full">
+                <svg xmlns="http://www.w3.org/2000/svg" width="3em" height="3em" viewBox="0 0 24 24"><mask id="lineMdCheckAll0"><g fill="none" stroke="#fff" stroke-dasharray="24" stroke-dashoffset="24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M2 13.5l4 4l10.75 -10.75"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.4s" values="24;0"/></path><path stroke="#000" stroke-width="6" d="M7.5 13.5l4 4l10.75 -10.75"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.4s" dur="0.4s" values="24;0"/></path><path d="M7.5 13.5l4 4l10.75 -10.75"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.4s" dur="0.4s" values="24;0"/></path></g></mask><rect width="24" height="24" fill="white" mask="url(#lineMdCheckAll0)"/></svg>
+                <p class="ml-1 text-md font-bold sm:text-base">Easy Buying</p>
+              </li>
+              <li class="bg-black flex items-center border border-white p-2 rounded-full">
+                <svg xmlns="http://www.w3.org/2000/svg" width="3em" height="3em" viewBox="0 0 24 24"><mask id="lineMdCheckAll0"><g fill="none" stroke="#fff" stroke-dasharray="24" stroke-dashoffset="24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M2 13.5l4 4l10.75 -10.75"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.4s" values="24;0"/></path><path stroke="#000" stroke-width="6" d="M7.5 13.5l4 4l10.75 -10.75"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.4s" dur="0.4s" values="24;0"/></path><path d="M7.5 13.5l4 4l10.75 -10.75"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.4s" dur="0.4s" values="24;0"/></path></g></mask><rect width="24" height="24" fill="white" mask="url(#lineMdCheckAll0)"/></svg>
+                <p class="ml-1 text-md font-bold sm:text-base">Fast Buying</p>
+              </li>
+              <li class="flex items-center bg-black border border-white p-2 rounded-full">
+                <svg xmlns="http://www.w3.org/2000/svg" width="3em" height="3em" viewBox="0 0 24 24"><mask id="lineMdCheckAll0"><g fill="none" stroke="#fff" stroke-dasharray="24" stroke-dashoffset="24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M2 13.5l4 4l10.75 -10.75"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.4s" values="24;0"/></path><path stroke="#000" stroke-width="6" d="M7.5 13.5l4 4l10.75 -10.75"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.4s" dur="0.4s" values="24;0"/></path><path d="M7.5 13.5l4 4l10.75 -10.75"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.4s" dur="0.4s" values="24;0"/></path></g></mask><rect width="24" height="24" fill="white" mask="url(#lineMdCheckAll0)"/></svg>
+                <p class="ml-1 text-md font-bold sm:text-base">We do everything after</p>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+      <ul class="p-5 mb-10 text-white grid w-full grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-3 grid">
+        {
+          posts.map((post) => (
+            <li>
+                <section class="rounded-3xl hover:scale-105 transition">
+                <div>       
+                <a
+                  href={`/homes/${post.slug}`}
+                  class={`border border-yellow-500 p-5 flex-col gap-4 rounded-3xl px-4 md:px-2  flex`}
+    
+                >
+                  <img
+                    alt=""
+                    src={`https://directus-dev.fly.dev/assets/${post.image}?width=500`}
+                    class="inline h-60 w-full rounded-2xl object-cover"
+                  />
+                  <div class="flex h-full w-full max-w-3xl max-h-3xl flex-col items-start justify-around px-0 py-4">
+                    <div class="mb-5 flex flex-col items-start gap-2">
+                      <div class="rounded-md bg-black text-blue-600 font-semibold px-2 py-1.5">
+                        <p class="text-gradient-price">{post.price}</p>
+                      </div>
+                      <p class="text-lg font-bold md:text-xl tracking-wide">Name: {post.text}</p>
+                      <p class="text-lg font-bold md:text-xl tracking-wide">Location: {post.location}</p>
+					  <p class="text-lg font-bold md:text-xl tracking-wide">Published: {post.published_date}</p>
+                    </div>
+                    <div class="border-t border-yellow-500 w-full mb-5"></div>
+                    <div class="flex items-center gap-11 sm:flex-row">
+                    <div class="text-white p-1 rounded-xl flex items-center">
+                        <p class="mr-3">Owner:</p>
+						<Picture src={`https://directus-dev.fly.dev/assets/${post.author.avatar}?width=500`} alt="Layla kruz" height={500} width={500} class="mr-2 inline-block rounded-full object-cover h-7 w-7 sm:h-7"/>
+              <p class="text-sm font-bold">{post.author.name}</p>
+            </div>
+            <div class="flex items-center">
+              <p class={`ml-1 xl:ml-32 text-sm font-bold p-2 rounded-full sm:flex ${Ratings(post.ratings)}`} >{post.ratings}</p>
+            </div>
+            </div>
+            
+                  </div>
+                </a>
+              </div>
+            </div>
+            
+            </section>
+         ))
+        }
+       </ul>
+  </main>
+</Layout>

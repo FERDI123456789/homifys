@@ -1,0 +1,82 @@
+---
+import { Picture } from "astro:assets";
+import Layout from "../../layouts/Layout.astro";
+import directus from "../../lib/directus";
+import "../../styles/global.css"
+import { readItems, readItem } from "@directus/sdk";
+
+export async function getStaticPaths() {
+  const posts = await directus.request(
+  readItems("posts", {
+    fields: [
+      "slug",
+      "image",
+      "second_image",
+      "text",
+      "ratings",
+      "price",
+      "location",
+      "published_date",
+      { author: ["name", "avatar", "about", "ratings_authors", "achieve", "achieve_two"] },
+    ],
+    sort: ["-ratings"],
+  })
+);
+  return posts.map((post) => ({ params: { slug: post.slug }, props: post }));
+}
+const post = Astro.props;
+
+  const Ratings_authors = (ratings_author: string) => {
+    switch (ratings_author) {
+      case "Best Rated Seller":
+        return "bg-yellow-600";
+      case "High Rated Seller":
+        return "bg-blue-600";
+      case "Low Rated Seller":
+        return "bg-red-700";
+      default:
+        return "bg-gray-500";
+    }
+  };
+---
+
+<Layout title={post.text}>
+<main>
+<section>
+  <!-- Container -->
+  <div class="text-white mx-auto w-full max-w-7xl px-5 py-12 md:px-10 md:py-16 lg:py-20">
+    <!-- Component -->
+    <div class="grid gap-12 sm:gap-20 lg:grid-cols-2">
+      <!-- Content -->
+      <div class="flex flex-col items-start gap-2">
+        <div class="flex items-center rounded-md px-3 py-1">
+          <p class={`rounded-xl text-black text-sm p-2 text-xl font-bold ${Ratings_authors(post.author.ratings_authors)}`}>{post.author.ratings_authors}</p>
+        </div>
+        <!-- Title -->
+        <h1 class="text-4xl font-bold md:text-6xl"> {post.author.name} </h1>
+        <p class="text-sm text-gray-500 sm:text-xl"><div set:html={post.author.about} /> </p>
+        <!-- Divider -->
+        <div class="mb-8 mt-8 h-px w-full bg-black"></div>
+        <div class="mb-6 flex flex-col gap-2 text-sm text-gray-500 sm:text-base lg:mb-8">
+          <p>
+            <strong>2023: </strong>{post.author.achieve}
+          </p>
+          <p>
+            <strong>2022: </strong>{post.author.achieve_two}
+          </p>
+        </div>
+        <!-- Buttons -->
+        <div class="flex flex-col gap-4 font-semibold sm:flex-row">
+          <a href="#" class="flex items-center gap-4 rounded-md bg-black px-6 py-3 text-white">
+            <img src="https://assets.website-files.com/6458c625291a94a195e6cf3a/64b147043fe6ab404e65635e_Envelope.svg" alt="" class="inline-block" />
+            <p>Contact Me</p>
+          </a>
+        </div>
+      </div>
+      <!-- Image -->
+      <Picture quality="max" src={`https://directus-dev.fly.dev/assets/${post.author.avatar}?width=500`} alt="test" format="webp" height={500} width={500} class="rounded-xl w-[600px] mx-auto object-cover object-center"/>
+    </div>
+  </div>
+</section>
+  </main>
+</Layout>
