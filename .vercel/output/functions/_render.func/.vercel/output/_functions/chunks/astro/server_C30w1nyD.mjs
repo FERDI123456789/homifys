@@ -3,7 +3,7 @@ import { A as AstroError, E as EndpointDidNotReturnAResponse, I as InvalidCompon
 import { clsx } from 'clsx';
 import { escape } from 'html-escaper';
 import { decodeBase64, encodeHexUpperCase, encodeBase64, decodeHex } from '@oslojs/encoding';
-import 'cssesc';
+import cssesc from 'cssesc';
 
 const ASTRO_VERSION = "4.16.7";
 const REROUTE_DIRECTIVE_HEADER = "X-Astro-Reroute";
@@ -2071,6 +2071,28 @@ function slide({
     }
   };
 }
+function fade({
+  duration
+} = {}) {
+  const anim = {
+    old: {
+      name: "astroFadeOut",
+      duration: duration ?? 180,
+      easing: EASE_IN_OUT_QUART,
+      fillMode: "both"
+    },
+    new: {
+      name: "astroFadeIn",
+      duration: duration ?? 180,
+      easing: EASE_IN_OUT_QUART,
+      fillMode: "both"
+    }
+  };
+  return {
+    forwards: anim,
+    backwards: anim
+  };
+}
 
 const transitionNameMap = /* @__PURE__ */ new WeakMap();
 function incrementTransitionNumber(result) {
@@ -2086,7 +2108,9 @@ function createTransitionScope(result, hash) {
   return `astro-${hash}-${num}`;
 }
 const getAnimations = (name) => {
-  return slide();
+  if (name === "fade") return fade();
+  if (name === "slide") return slide();
+  if (typeof name === "object") return name;
 };
 const addPairs = (animations, stylesheet) => {
   for (const [direction, images] of Object.entries(animations)) {
@@ -2095,15 +2119,35 @@ const addPairs = (animations, stylesheet) => {
     }
   }
 };
-"0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_".split("").reduce((v, c) => (v[c.charCodeAt(0)] = c, v), []);
-"-0123456789_".split("").reduce((v, c) => (v[c.charCodeAt(0)] = c, v), []);
+const reEncodeValidChars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_".split("").reduce((v, c) => (v[c.charCodeAt(0)] = c, v), []);
+const reEncodeInValidStart = "-0123456789_".split("").reduce((v, c) => (v[c.charCodeAt(0)] = c, v), []);
+function reEncode(s) {
+  let result = "";
+  let codepoint;
+  for (let i = 0; i < s.length; i += (codepoint ?? 0) > 65535 ? 2 : 1) {
+    codepoint = s.codePointAt(i);
+    if (codepoint !== void 0) {
+      result += codepoint < 128 ? codepoint === 95 ? "__" : reEncodeValidChars[codepoint] ?? "_" + codepoint.toString(16).padStart(2, "0") : String.fromCodePoint(codepoint);
+    }
+  }
+  return reEncodeInValidStart[result.codePointAt(0) ?? 0] ? "_" + result : result;
+}
 function renderTransition(result, hash, animationName, transitionName) {
+  if (typeof (transitionName ?? "") !== "string") {
+    throw new Error(`Invalid transition name {${transitionName}}`);
+  }
+  if (!animationName) animationName = "fade";
   const scope = createTransitionScope(result, hash);
-  const name = scope;
+  const name = transitionName ? cssesc(reEncode(transitionName), { isIdentifier: true }) : scope;
   const sheet = new ViewTransitionStyleSheet(scope, name);
-  const animations = getAnimations();
+  const animations = getAnimations(animationName);
   if (animations) {
     addPairs(animations, sheet);
+  } else if (animationName === "none") {
+    sheet.addFallback("old", "animation: none; mix-blend-mode: normal;");
+    sheet.addModern("old", "animation: none; opacity: 0; mix-blend-mode: normal;");
+    sheet.addAnimationRaw("new", "animation: none; mix-blend-mode: normal;");
+    sheet.addModern("group", "animation: none");
   }
   result._metadata.extraHead.push(markHTMLString(`<style>${sheet.toString()}</style>`));
   return scope;
