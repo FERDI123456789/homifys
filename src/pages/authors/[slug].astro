@@ -103,9 +103,9 @@ const Ratings = (rating: string) => {
     <div class="grid gap-12 sm:gap-20 lg:grid-cols-2">
       <div class="flex flex-col items-start gap-2">
         <div class="flex items-center rounded-md">
-          <p class={`p-2 rounded-full text-sm ${Ratings_authors(auth.author.ratings_authors)}`}>{auth.author.ratings_authors}</p>
+          <p transition:name={auth.author.ratings_authors} class={`p-2 rounded-full text-sm ${Ratings_authors(auth.author.ratings_authors)}`}>{auth.author.ratings_authors}</p>
         </div>
-        <h1 class="mb-6 text-4xl font-bold md:text-6xl lg:mb-8"> {auth.author.name} </h1>
+        <h1 transition:name={auth.author.name} class="mb-6 text-4xl font-bold md:text-6xl lg:mb-8"> {auth.author.name} </h1>
         <p class="text-sm text-gray-500 sm:text-xl"> <div set:html={auth.author.about}/> </p>
         <div class="mb-8 mt-8 h-px w-full bg-black"></div>
         <div class="mb-6 flex flex-col gap-2 text-sm text-gray-500 sm:text-base lg:mb-8">
@@ -123,10 +123,10 @@ const Ratings = (rating: string) => {
           </a>
         </div>
       </div>
-      <Picture src={`https://directus-dev.fly.dev/assets/${auth.author.avatar}?width=500`} alt="Layla kruz" height={500} width={500} class="rounded-xl mr-2 inline-block object-cover h-[500px] w-full"/>
+      <Picture transition:animate="slide" transition:name={auth.author.avatar} src={`https://directus-dev.fly.dev/assets/${auth.author.avatar}?width=500`} alt="Layla kruz" height={500} width={500} class="rounded-xl mr-2 inline-block object-cover h-[500px] w-full"/>
     </div>
   </div>
-</section>
+</section> 
 <div class="mt-20 text-white mx-auto mb-8 max-w-3xl text-center">
   <h2 class="mb-4 mt-6 text-3xl font-bold md:text-5xl">
     Homes from {auth.author.name}
@@ -147,6 +147,7 @@ const Ratings = (rating: string) => {
                 class={`border border-yellow-500 p-5 flex-col gap-4 rounded-3xl px-4 md:px-2 flex`}
               >
                 <img
+                  
                   alt=""
                   src={`https://directus-dev.fly.dev/assets/${post.image}?width=500`}
                   class="inline h-60 w-full rounded-2xl object-cover"

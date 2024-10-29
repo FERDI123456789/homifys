@@ -56,14 +56,14 @@ const Ratings = (rating: string) => {
 
 <Layout title={post.text}>
 <main>
-<div class="fullBg text-white">
+<div transition:name={post.slug} class="fullBg text-white">
     <div class="pt-6">
   
       <!-- Image gallery -->
       <div class="mx-auto mt-6 max-w-2xl sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-2 lg:gap-x-8 lg:px-8">
         <div class="sm:grid sm:grid-cols-1 sm:gap-y-8">
           <div class="aspect-h-2 aspect-w-3 overflow-hidden sm:rounded-lg">
-            <Picture transition:animate="slide" quality="max" src={`https://directus-dev.fly.dev/assets/${post.image}?width=500`} alt="test" format="webp" height={500} width={500} class="w-[600px] mx-auto object-cover object-center"/>
+            <Picture transition:animate="slide" transition:name={post.image} quality="max" src={`https://directus-dev.fly.dev/assets/${post.image}?width=500`} alt="test" format="webp" height={500} width={500} class="w-[600px] mx-auto object-cover object-center"/>
           </div>
         </div>
         <div class="hidden lg:grid lg:grid-cols-1 lg:gap-y-8">
@@ -76,13 +76,13 @@ const Ratings = (rating: string) => {
       <!-- Product info -->
       <div class="mx-auto max-w-2xl px-4 pb-16 pt-10 sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-3 lg:grid-rows-[auto,auto,1fr] lg:gap-x-8 lg:px-8 lg:pb-24 lg:pt-16">
         <div class="lg:col-span-2 lg:border-r lg:border-gray-200 lg:pr-8">
-          <h1 class="text-2xl font-bold tracking-tight text-gray-300 sm:text-3xl"><span class="text-gradient">{post.text}</span></h1>
+          <h1 transition:name={post.text} class="text-2xl font-bold tracking-tight text-gray-300 sm:text-3xl"><span class="text-gradient">{post.text}</span></h1>
         </div>
   
         <!-- Options -->
         <div class="mt-4 lg:row-span-3 lg:mt-0">
           <h2 class="sr-only">Product information</h2>
-          <p class="text-3xl text-white font-bold"><span class="bg-black p-1">{post.price}</span></p>
+          <p transition:name={post.price} class="text-3xl text-white font-bold"><span class="bg-black p-1">{post.price}</span></p>
   
           <!-- Reviews -->
           <div class="mt-6">
@@ -118,9 +118,9 @@ const Ratings = (rating: string) => {
 
             <a href={`/authors/${post.author.slug}`} class="rounded-xl mt-10 flex items-center gap-11 sm:flex-row">
             <div class="rounded-xl text-[#1d1d1d] p-1 homeinfoBg flex items-center">
-              <Picture src={`https://directus-dev.fly.dev/assets/${post.author.avatar}?width=500`} alt="Layla kruz" height={500} width={500} class="rounded-full mr-2 inline-block object-cover h-7 w-7 sm:h-7"/>
-              <p class="text-sm font-bold">{post.author.name}</p>
-              <p class={`rounded-xl ml-5 text-sm font-bold p-2 sm:flex ${Ratings_authors(post.author.ratings_authors)}`} >{post.author.ratings_authors}</p>
+              <Picture src={`https://directus-dev.fly.dev/assets/${post.author.avatar}?width=500`} alt={post.author.name} height={500} width={500} class="rounded-full mr-2 inline-block object-cover h-7 w-7 sm:h-7"/>
+              <p transition:name={post.author.name} class="text-sm font-bold">{post.author.name}</p>
+              <p transition:name={post.author.ratings_authors} class={`rounded-xl ml-5 text-sm font-bold p-2 sm:flex ${Ratings_authors(post.author.ratings_authors)}`} >{post.author.ratings_authors}</p>
             </div>
           </a>
         </div>

@@ -89,17 +89,17 @@ const Ratings = (rating: string) => {
     <!-- Container -->
     <div class="text-white mx-auto w-full max-w-7xl px-5 py-16 md:px-10 md:py-20">
       <!-- Component -->
-      <div class="grid items-center gap-8 sm:gap-20 lg:grid-cols-2">
+      <div class="grid place-content-center items-center gap-8 sm:gap-20 lg:grid-cols-2">
         <div class="max-w-3xl">
           <!-- Title -->
           <div class="mb-5 flex items-center rounded-md">
-            <p class={`p-2 rounded-full text-sm ${Ratings_authors(auth.author.ratings_authors)}`}>{auth.author.ratings_authors}</p>
+            <p transition:name={auth.author.ratings_authors} class={`p-2 rounded-full text-sm ${Ratings_authors(auth.author.ratings_authors)}`}>{auth.author.ratings_authors}</p>
           </div>
-          <h2 class="mb-2 text-3xl font-bold md:text-5xl">Contact {auth.author.name} </h2>
-          <p class="my-4 max-w-lg pb-4 text-[2px] text-gray-500 sm:text-base md:mb-6 lg:mb-8">Buying, Making a deal or wanna ask him to sell your house for you? just contact {auth.author.name}</p>
-          <Picture src={`https://directus-dev.fly.dev/assets/${auth.author.avatar}?width=500`} alt="Layla kruz" height={500} width={500} class="rounded-xl mr-2 inline-block object-cover h-[500px] w-full"/>
-          <p class="border-t border-yellow-500 pt-5 mt-10 mb-8 max-w-lg text-sm text-gray-500 sm:text-base"> I Baught a home from {auth.author.name} One Time and it was super easy and than with homifyss as well it was just so great highly recommended!</p>
-          <div class="flex">
+          <h2 transition:name={auth.author.name} class="mb-2 text-3xl font-bold lg:text-4xl xl:text-5xl">Contact {auth.author.name} </h2>
+          <p class="my-4 max-w-lg pb-4 text-[17px] text-gray-500 sm:text-base md:mb-6 lg:mb-8">Buying, Making a deal or wanna ask him to sell your house for you? just contact {auth.author.name}</p>
+          <Picture transition:name={auth.author.avatar} src={`https://directus-dev.fly.dev/assets/${auth.author.avatar}?width=500`} alt="Layla kruz" height={500} width={500} class="rounded-xl inline-block object-cover h-[500px] w-full"/>
+          <p class="hidden lg:flex border-t border-yellow-500 pt-5 mt-10 mb-8 max-w-lg text-sm text-gray-500 sm:text-base"> I Baught a home from {auth.author.name} One Time and it was super easy and than with homifyss as well it was just so great highly recommended!</p>
+          <div class="hidden flex lg:flex">
             <Picture src={rating} alt="Connan Marco" class="mr-4 inline-block h-16 w-16 rounded-full object-cover"/>
             <div class="flex flex-col">
               <h6 class="text-base font-bold">Connan Marco</h6>
