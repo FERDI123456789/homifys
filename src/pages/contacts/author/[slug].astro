@@ -79,11 +79,11 @@ const check = (check_value: string, slug:string) => {
       <div class="grid items-center gap-8 sm:gap-20 lg:grid-cols-2">
         <div class="max-w-3xl">
           <!-- Title -->
-          <h2 class="mb-2 text-3xl font-bold md:text-5xl"> Want to contact <span class="text-gradient">{auth.author.name}</span> </h2>
+          <h2 class="mb-2 text-3xl font-bold md:text-5xl">Contact <span class="text-gradient">{auth.author.name}</span></h2>
           <p class="my-4 max-w-lg pb-4 text-sm text-gray-500 sm:text-base md:mb-6 lg:mb-8"> Interested in buying or just wanna ask {auth.author.name} something? <br> just contact {auth.author.name}! </p>
           <Picture src={`https://directus-dev.fly.dev/assets/${auth.author.avatar}?width=500`} alt="Layla kruz" height={500} width={500} class="rounded-xl mr-2 inline-block object-cover w-full"/>
           <!-- Testimonial -->
-           <div class="hidden lg:flex">
+           <div class="hidden lg:grid mt-5">
             <div class="mb-4 flex items-center text-orange-500">
               <svg class="h-8 w-8" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24">
                 <path fill="currentColor" d="m12 17.27l4.15 2.51c.76.46 1.69-.22 1.49-1.08l-1.1-4.72l3.67-3.18c.67-.58.31-1.68-.57-1.75l-4.83-.41l-1.89-4.46c-.34-.81-1.5-.81-1.84 0L9.19 8.63l-4.83.41c-.88.07-1.24 1.17-.57 1.75l3.67 3.18l-1.1 4.72c-.2.86.73 1.54 1.49 1.08l4.15-2.5z"></path>
@@ -111,7 +111,7 @@ const check = (check_value: string, slug:string) => {
             </div>
           </div>
         </div>
-        <div transition:animate="slide" class="mx-auto max-w-xl bg-black p-8 text-center">
+        <div transition:animate="slide" class="mx-auto w-full bg-black p-8 text-center">
           <h3 class="text-2xl font-bold md:text-3xl">Contact</h3>
           <p class="mx-auto mb-6 mt-4 max-w-lg text-sm text-gray-100 lg:mb-8"> Contact {auth.author.name}, and a response will be provided within 48 hours. </p>
           <p class="mx-auto mb-6 max-w-lg text-[12px] sm:text-sm bg-red-700 p-2 rounded-full text-gray-100 lg:mb-8"> This Contact form is not working its just for funn :) </p>
@@ -139,11 +139,11 @@ const check = (check_value: string, slug:string) => {
   <h2 class="mb-4 mt-6 text-xl font-bold md:text-3xl">
     Intrested in buying a home from {auth.author.name}?
   </h2>
-  <p class="mx-auto mt-4 text-gray-500">
+  <p class="px-3 mx-auto mt-4 text-gray-500">
     These are homes from {auth.author.name} on the market ready to get baught!
   </p>
 </div>
-<ul class="gap-10 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 p-5 text-white">
+<ul class="gap-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 p-5 text-white">
   {
     posts.reverse().map((post) => (
       <li class={`${check(post.author.name, auth.author.name)} rounded-3xl`}>
@@ -176,7 +176,7 @@ const check = (check_value: string, slug:string) => {
                           <p class="text-sm font-bold">{post.author.name}</p>
                         </div>
                         <div class="flex items-center">
-                          <p class={`ml-3 text-[10px] sm:text-sm font-bold p-2 rounded-full sm:flex ${Ratings_authors(post.author.ratings_authors)}`}>{post.author.ratings_authors}</p>
+                          <p class={`ml-3 text-[10px] md:text-sm font-bold p-2 rounded-full sm:flex ${Ratings_authors(post.author.ratings_authors)}`}>{post.author.ratings_authors}</p>
                         </div>
                       </div>
                     </div>
