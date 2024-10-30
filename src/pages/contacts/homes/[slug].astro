@@ -80,7 +80,7 @@ const check = (check_value: string, slug:string) => {
         <div class="max-w-3xl">
           <!-- Title -->
           <h2 class="mb-2 text-2xl font-bold md:text-4xl"> Want to buy <span class="text-gradient">{auth.text}</span> ? </h2>
-          <p class="my-4 max-w-lg pb-4 text-sm text-gray-500 sm:text-sm md:mb-6 lg:mb-8"> Are you interested in buying or want to make a deal about {auth.text}?<br> Don't hesitate to contact {auth.author.name}! </p>
+          <p class="my-4 max-w-lg pb-4 text-md text-gray-500 sm:text-sm md:mb-6 lg:mb-8"> Are you interested in buying or want to make a deal about {auth.text}?<br> Don't hesitate to contact {auth.author.name}! </p>
           <Picture src={`https://directus-dev.fly.dev/assets/${auth.image}?width=500`} alt="Layla kruz" height={500} width={500} class="rounded-xl mr-2 inline-block object-cover w-full"/>
           <!-- Testimonial -->
            <div class="hidden lg:grid mt-5">
@@ -113,7 +113,7 @@ const check = (check_value: string, slug:string) => {
         </div>
         <div transition:animate="slide" class="mx-auto max-w-xl bg-black p-8 text-center">
           <h3 class="text-2xl font-bold md:text-3xl">Contact</h3>
-          <p class="mx-auto mb-6 mt-4 max-w-lg text-sm text-gray-100 lg:mb-8"> Contact {auth.author.name}, and a response will be provided within 48 hours. </p>
+          <p class="mx-auto mb-6 mt-4 max-w-lg text-sm text-gray-100 lg:mb-8"> {auth.author.name} will response within 48 hours </p>
           <p class="mx-auto mb-6 max-w-lg text-[12px] sm:text-sm bg-red-700 p-2 rounded-full text-gray-100 lg:mb-8"> This Contact form is not working its just for funn :) </p>
           <!-- Form -->
           <form class="mx-auto mb-4 max-w-sm text-left" name="wf-form-password" method="get">
