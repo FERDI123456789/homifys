@@ -31,7 +31,7 @@ const t = Astro.props;
           <div class="lg:-mt-20 flex flex-col gap-8 lg:flex-row lg:gap-10">
             <!-- Content -->
             <div class="mt-10 flex flex-col gap-8 lg:w-3/5">
-              <h2 class="text-3xl font-bold md:text-5xl md:mb-8">{t.team_mem.name}</h2>
+              <h2 transition:name={t.slug} class="text-3xl font-bold md:text-5xl md:mb-8">{t.team_mem.name}</h2>
               <p class="text-sm sm:text-base"> <div set:html={t.team_mem.about}/> </p>
               <a href="/team" class="w-36 rounded-md bg-black px-6 py-3 text-center font-semibold text-white hover:bg-yellow-500 hover:scale-110 hover:text-black transition"> See All </a>
               <!-- Divider -->
